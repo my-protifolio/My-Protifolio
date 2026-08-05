@@ -1541,3 +1541,44 @@ body.admin-mode .add-card {
 .delete-btn:hover {
     background: #ef4444 !important;
 }
+
+
+/* إخفاء أزرار التحكم افتراضياً */
+.admin-actions {
+    display: none !important;
+}
+
+/* إظهار الأزرار فوراً لما يفعل وضع المالك (admin-mode) */
+body.admin-mode .admin-actions {
+    display: flex !important;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 20;
+    background: rgba(0, 0, 0, 0.85);
+    padding: 12px;
+    border-radius: 8px;
+    width: 90%;
+}
+
+/* تنسيق أزرار التعديل والحذف عشان تكون واضحة ومكشوفة */
+body.admin-mode .admin-btn {
+    display: inline-block !important;
+    background: #ec4899;
+    color: #ffffff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    text-align: center;
+}
+
+body.admin-mode .delete-btn {
+    background: #ef4444 !important;
+}
