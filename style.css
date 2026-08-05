@@ -104,7 +104,9 @@ body {
 
 .nav-logo a {
     font-size: 1.5rem;
-    font-weight: 700;
+    font-weight: 100;
+    height: 100px;
+    border-radius: 50%;
     color: var(--text-primary);
     text-decoration: none;
     letter-spacing: 1px;
@@ -1547,38 +1549,48 @@ body.admin-mode .add-card {
 .admin-actions {
     display: none !important;
 }
+/* إخفاء الأزرار افتراضياً عن الزائر */
+.admin-actions {
+    display: none !important;
+}
 
-/* إظهار الأزرار فوراً لما يفعل وضع المالك (admin-mode) */
+/* إظهار كورس الأزرار كاملاً في وضع المالك */
 body.admin-mode .admin-actions {
     display: flex !important;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 20;
-    background: rgba(0, 0, 0, 0.85);
-    padding: 12px;
-    border-radius: 8px;
-    width: 90%;
+    flex-direction: row !important;  /* الأزرار جنب بعض بشكل متناسق */
+    flex-wrap: wrap !important;      /* لو الشاشة صغيرة بينزلوا سطر جديد تلقائياً */
+    gap: 6px !important;            /* مسافة صغيرة ومريحة بين كل زرار */
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-bottom: 12px !important;
+    z-index: 20 !important;
 }
 
-/* تنسيق أزرار التعديل والحذف عشان تكون واضحة ومكشوفة */
-body.admin-mode .admin-btn {
-    display: inline-block !important;
-    background: #ec4899;
-    color: #ffffff;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    text-align: center;
+/* تنسيق عام لكل عناصر الأزرار سواء كانت label أو button */
+body.admin-mode .admin-actions .admin-btn {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: #ec4899 !important; /* لون بينك أنيق لكل الأزرار */
+    color: #ffffff !important;
+    padding: 6px 10px !important;
+    border-radius: 6px !important;
+    font-size: 0.78rem !important;
+    font-weight: 600 !important;
+    cursor: pointer !important;
+    border: none !important;
+    text-decoration: none !important;
+    box-sizing: border-box !important;
 }
 
-body.admin-mode .delete-btn {
+/* زرار الحذف بتميز بلون أحمر واضح جداً للضغط */
+body.admin-mode .admin-actions .delete-btn {
     background: #ef4444 !important;
+}
+
+/* تأثير عند مرور الماوس */
+body.admin-mode .admin-actions .admin-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-1px);
 }
