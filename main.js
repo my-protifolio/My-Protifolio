@@ -534,3 +534,17 @@ function deleteProjectCard(cardId) {
         }
     }
 }
+
+
+// دالة لتبديل وضع الملك (تشغيل / إيقاف)
+function toggleOwnerMode() {
+    // بيضيف أو يشيل كلاس owner-active من الـ body
+    document.body.classList.toggle('owner-active');
+    
+    // إظهار رسالة لتأكيد الحالة
+    if (document.body.classList.contains('owner-active')) {
+        alert("👑 تم تفعيل وضع الملك! يمكنك الآن تعديل المشاريع.");
+    } else {
+        alert("🔒 تم إيقاف وضع الملك (الوضع العادي للزوار).");
+    }
+}
