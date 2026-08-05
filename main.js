@@ -408,46 +408,65 @@ function deleteProject(id) {
         if (card) card.remove();
     }
 }
-
-// ==========================================
-// 5. إضافة مشروع جديد بالكامل من كارت (+)
-// ==========================================
+// دالة إضافة مشروع جديد (محدثة لتدعم الحذف والتعديل)
 function addNewProject(event) {
     const file = event.target.files[0];
     if (file) {
-        const title = prompt("أدخلي عنوان المشروع الجديد:", "New Project") || "New Project";
-        const desc = prompt("أدخلي وصف المشروع:", "Project Description") || "Project Description";
-        const imgUrl = URL.createObjectURL(file);
-        const newId = 'p' + Date.now();
-
-        const track = document.getElementById('carouselTrack');
-        const addCard = document.querySelector('.add-card');
-
-        const newCard = document.createElement('div');
-        newCard.className = 'project-card';
-        newCard.setAttribute('data-id', newId);
-        newCard.innerHTML = `
-            <div class="project-img-box">
-                <img src="${imgUrl}" alt="${title}" class="proj-img" id="img-${newId}">
-                <div class="project-overlay owner-controls">
-                    <div class="admin-actions">
-                        <label for="change-img-${newId}" class="admin-btn" title="تغيير الصورة">📷 تغيير الصورة</label>
-                        <input type="file" id="change-img-${newId}" accept="image/*" style="display: none;" onchange="changeProjectImage(event, '${newId}')">
-                        <button class="admin-btn edit-btn" onclick="editProject('${newId}')">✏️ تعديل النص</button>
-                        <button class="admin-btn delete-btn" onclick="deleteProject('${newId}')">🗑️ حذف</button>
+        const carouselTrack = document.getElementById('carouselTrack');
+        
+        // 1. إنشاء ID فريد للمشروع الجديد بناءً على الوقت الحالي (مثلاً: new-171567890123)
+        const newId = 'new-' + Date.now();
+        const imageUrl = URL.createObjectURL(file);
+        
+        // 2. بناء هيكل كارت المشروع الجديد كـ string HTML بنفس التنسيق المظبوط
+        const newCardHTML = `
+            <div class="project-card dynamic-project" data-id="${newId}" id="${newId}">
+                <div class="project-img-box">
+                    <img src="${imageUrl}" alt="New Project" class="proj-img" id="img-${newId}">
+                    <div class="project-overlay owner-controls">
+                        <div class="admin-actions">
+                            <label for="change-img-${newId}" class="admin-btn change-img-btn" title="تغيير الصورة">📷 تغيير الصورة</label>
+                            <input type="file" id="change-img-${newId}" accept="image/*" style="display: none;" onchange="changeProjectImage(event, '${newId}')">
+                            
+                            <button class="admin-btn edit-btn" onclick="editProjectText('${newId}')">✏️ تعديل النص</button>
+                            
+                            <!-- هنا سر الحل: زرار الحذف بينادي على دالة الحذف بنفس الـ ID الفريد -->
+                            <button class="admin-btn delete-btn" onclick="deleteProject('${newId}')">🗑️ حذف</button>
+                        </div>
+                        <h4 id="title-${newId}">اسم المشروع الجديد</h4>
+                        <p id="desc-${newId}">وصف مختصر للمشروع الجديد.</p>
                     </div>
-                    <h4 id="title-${newId}">${title}</h4>
-                    <p id="desc-${newId}">${desc}</p>
                 </div>
             </div>
         `;
+        
+        // 3. إضافة الكارت الجديد للـ Carousel قبل كارت "Add New"
+        const addCard = document.querySelector('.add-card');
+        addCard.insertAdjacentHTML('beforebegin', newCardHTML);
+        
+        // 4. تصفير الـ input لعمارة إضافة صورة جديدة
+        event.target.value = '';
+        
+        // 5. تحديث الـ Carousel (إذا كان لديك دالة لتحديثه)
+        // if (typeof updateCarousel === 'function') updateCarousel();
 
-        track.insertBefore(newCard, addCard);
+        alert("تم إضافة المشروع الجديد بنجاح! 🚀 (جرب حذف الآن)");
     }
 }
 
-
-
+// دالة تعديل النص (للمشاريع الجديدة والقديمة)
+function editProjectText(id) {
+    const titleEle = document.getElementById('title-' + id);
+    const descEle = document.getElementById('desc-' + id);
+    
+    if (titleEle && descEle) {
+        const newTitle = prompt("أدخل العنوان الجديد للمشروع:", titleEle.innerText);
+        const newDesc = prompt("أدخل الوصف الجديد للمشروع:", descEle.innerText);
+        
+        if (newTitle !== null) titleEle.innerText = newTitle;
+        if (newDesc !== null) descEle.innerText = newDesc;
+    }
+}
 
 
 
@@ -482,7 +501,7 @@ if (navLogo) {
 // دالة التحقق من الباسورد وتفعيل وضع الأدمن
 function toggleAdminMode() {
     const pass = prompt("أدخلي كلمة السر لتفعيل وضع الأدمن:");
-    if (pass === "1234") { // كلمة السر الخاصة بكِ
+    if (pass === "3709") { // كلمة السر الخاصة بكِ
         document.body.classList.toggle('admin-mode');
         
         if (document.body.classList.contains('admin-mode')) {
@@ -546,5 +565,39 @@ function toggleOwnerMode() {
         alert("👑 تم تفعيل وضع الملك! يمكنك الآن تعديل المشاريع.");
     } else {
         alert("🔒 تم إيقاف وضع الملك (الوضع العادي للزوار).");
+    }
+}
+
+
+
+// دالة حذف المشروع (مضمونة ومطابقة للـ HTML عندك)
+function deleteProject(id) {
+    // 1. إظهار رسالة تأكيد
+    const confirmDelete = confirm("هل أنت متأكد من حذف هذا المشروع؟");
+    
+    if (confirmDelete) {
+        // 2. البحث عن كارت المشروع سواء بالـ data-id أو بالـ ID المباشر
+        const card = document.querySelector(`.project-card[data-id="${id}"]`) || 
+                     document.getElementById(id) || 
+                     document.getElementById('card-' + id);
+        
+        if (card) {
+            card.remove(); // مسح الكارت بالكامل من الصفحة فوراً
+            alert("تم حذف المشروع بنجاح! 🗑️");
+        } else {
+            alert("لم يتم العثور على المشروع!");
+        }
+    }
+}
+
+// دالة تغيير صورة المشروع (مضمونة)
+function changeProjectImage(event, id) {
+    const file = event.target.files[0];
+    if (file) {
+        const img = document.getElementById('img-' + id);
+        if (img) {
+            img.src = URL.createObjectURL(file);
+            alert("تم تغيير الصورة بنجاح! 📸");
+        }
     }
 }
